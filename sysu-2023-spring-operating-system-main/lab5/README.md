@@ -60,10 +60,10 @@ va_list
 // 初始化可变参数列表指针 ap，使其指向可变参数列表的起始位置，
 // 即函数的固定参数列表的最后一个参数 last_arg 的后面第一个参数。
 va_start(va_list ap, last_arg)
-  
+
 // 以类型 type 返回可变参数，并使 ap 指向下一个参数。
 va_arg(va_list ap, type)
-    
+
 // 清零 ap。
 va_end(va_list ap)
 ```
@@ -91,7 +91,7 @@ void print_any_number_of_integers(int n, ...)
         // 引用parameter指向的int参数，并使parameter指向下一个参数
         std::cout << va_arg(parameter, int) << " ";
     }
-    
+
     // 清零parameter
     va_end(parameter);
 
@@ -140,7 +140,7 @@ void print_any_number_of_integers(int n, ...)
         // 引用parameter指向的int参数，并使parameter指向下一个参数
         std::cout << va_arg(parameter, int) << " ";
     }
-    
+
     // 清零parameter
     va_end(parameter);
 
@@ -245,7 +245,7 @@ void print_any_number_of_integers(int n, ...)
     // 使用固定参数列表的最后一个参数来初始化parameter
     // parameter指向可变参数列表的第一个参数
     va_start(parameter, n);
-    
+
     for (int i = 0; i < n; ++i)
     {
         // 引用parameter指向的int参数，并使parameter指向下一个参数
@@ -336,12 +336,12 @@ int STDIO::print(const char *const str)
 
 我们实现的printf比较简单，只能解析如下参数。
 
-| 符号 | 含义             |
-| ---- | ---------------- |
-| %d   | 按十进制整数输出 |
-| %c   | 输出一个字符     |
-| %s   | 输出一个字符串   |
-| %x   | 按16进制输出     |
+| 符号  | 含义       |
+| --- | -------- |
+| %d  | 按十进制整数输出 |
+| %c  | 输出一个字符   |
+| %s  | 输出一个字符串  |
+| %x  | 按16进制输出  |
 
 按照前面描述的过程，printf的实现如下。
 
@@ -493,7 +493,7 @@ void itos(char *numStr, uint32 num, uint32 mod) {
     for(int i = 0, j = length - 1; i < j; ++i, --j) {
         swap(numStr[i], numStr[j]);
     }
-    
+
     numStr[length] = '\0';
 }
 ```
@@ -551,7 +551,6 @@ extern "C" void setup_kernel()
     //uint a = 1 / 0;
     asm_halt();
 }
-
 ```
 
 然后修改makefile。
@@ -661,9 +660,9 @@ struct PCB
 我们来看PCB各成员的含义。
 
 + `stack`。各个内核线程是共享内核空间的，但又相对独立，这种独立性体现在每一个线程都有自己的栈。那么线程的栈保存在哪里呢？线程的栈就保存在线程的PCB中，我们会为每一个PCB分配一个页。上面的`struct PCB`只是这个页的低地址部份，线程的栈指针从这个页的结束位置向下递减，如下所示。
-
+  
   <img src="gallery/3.png" alt="TCB栈" style="zoom:30%;" />
-
+  
   因此，我们不能向线程的栈中放入太多的东西，否则当栈指针向下扩展时，会与线程的PCB的信息发生覆盖，最终导致错误。`stack`的作用是在线程被换下处理器时保存esp的内容，然后当线程被换上处理器后，我们用`stack`去替换esp的内容，从而实现恢复线程运行的效果。
 
 + `status`是线程的状态，如运行态、阻塞态和就绪态等。
@@ -743,7 +742,7 @@ public:
 
 class ProgramManager
 {
-    
+
 };
 
 #endif
@@ -821,7 +820,7 @@ public:
 public:
     ProgramManager();
     void initialize();
-    
+
     // 分配一个PCB
     PCB *allocatePCB();
     // 归还一个PCB
@@ -964,7 +963,7 @@ class InterruptManager
     // 设置中断状态
     // status=true，开中断；status=false，关中断
     void setInterruptStatus(bool status);
-    
+
     ...
 };
 ```
@@ -1028,9 +1027,9 @@ extern "C" void c_time_interrupt_handler()
 我们实现的线程调度算法是最简单的时间片轮转算法（Round Robin, RR）。
 
 > round robin 来源于法语ruban rond（round ribbon），意思是环形丝带。
->
+> 
 > 在17、18世纪时法国农民希望以请愿的方式抗议国王时，通常君主的反应是将请愿书中最前面的两至三人逮捕并处决，所以很自然地没有人希望自己的名字被列在前面。为了对付这种专制的报复，人们在请愿书底部把名字签成一个圈（如同一条环状的带子），这样就找不出带头大哥，于是只能对所有参与者进行同样的惩罚。
->
+> 
 > 1731年，英国皇家海军最初使用了这个名词，以循环顺序签署请愿书，这样就没法找到带头大哥了。
 
 当时钟中断到来时，我们对当前线程的`ticks`减1，直到`ticks`等于0，然后执行线程调度。线程调度的是通过函数`ProgramManager::schedule`来完成的，如下所示。
@@ -1234,7 +1233,7 @@ extern "C" void setup_kernel()
 1. 学习可变参数机制中的4个宏`va_start`，`va_list`，`va_arg`，`va_end`的用法，然后自定义若干个使用可变参数的函数并调用之。结果截图并说说你是怎么做的。
 
 2. 使用教程实现的可变参数的4个宏，结合gdb和1中自定义的例子，分析可变参数的4个宏是如何实现的。重点思考如下问题。
-
+   
    + 调用可变参数的函数前后，栈中的内容发生了什么变化？
    + 经`va_start`初始化后，变量的内容是什么？对应于栈中的哪一个实参？
    + 对于不同长度的变量，如`char`，`int`等，`va_arg`是如何做内存对齐的？我们又是如何通过`va_arg`来获取可变参数列表中的实参的？
@@ -1256,29 +1255,29 @@ extern "C" void setup_kernel()
 10. 自行设计PCB，可以添加更多的属性，如优先级等，然后根据你的PCB来实现线程，演示执行结果。
 
 11. 操作系统的线程能够并发执行的秘密在于我们需要中断线程的执行，保存当前线程的状态，然后调度下一个线程上处理机，最后使被调度上处理机的线程从之前被中断点处恢复执行。现在，同学们可以亲手揭开这个秘密。
-
+    
     编写若干个线程函数，使用gdb跟踪`c_time_interrupt_handler`、`asm_switch_thread`等函数，观察线程切换前后栈、寄存器、PC等变化，结合gdb、材料中“线程的调度”的内容来跟踪并说明下面两个过程。
-
+    
     + 一个新创建的线程是如何被调度然后开始执行的。
     + 一个正在执行的线程是如何被中断然后被换下处理器的，以及换上处理机后又是如何从被中断点开始执行的。
-
+    
     通过上面这个练习，同学们应该能够进一步理解操作系统是如何实现线程的并发执行的。
 
 12. 在材料中，我们已经学习了如何使用时间片轮转算法来实现线程调度。但线程调度算法不止一种，例如
-
+    
     + 先来先服务。
     + 最短作业（进程）优先。
     + 响应比最高者优先算法。
     + 优先级调度算法。
     + 多级反馈队列调度算法。
-
+    
     此外，我们的调度算法还可以是抢占式的。
-
+    
     现在，同学们需要将线程调度算法修改为上面提到的算法或者是同学们自己设计的算法。然后，同学们需要自行编写测试样例来呈现你的算法实现的正确性和基本逻辑。最后，将结果截图并说说你是怎么做的。
-
+    
     参考资料：https://zhuanlan.zhihu.com/p/97071815
-
+    
     Tips：
-
+    
     + 先来先服务最简单。
     + 有些调度算法的实现**可能需要**用到中断。
